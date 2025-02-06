@@ -3,7 +3,7 @@
     "name": "Nick8Mobile",
     "slug": "nick8mobile",
     "version": "1.0.0",
-    "scheme": "nlw",
+    "scheme": "nk8",
     "orientation": "portrait",
     "icon": "./assets/nlwicon.png",
     "userInterfaceStyle": "light",
