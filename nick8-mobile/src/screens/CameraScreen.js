@@ -29,8 +29,9 @@ const CameraScreen = () => {
       const data = await camera.takePictureAsync(options);
 
       // Update the prompt to ask for an explanation followed by a single nutrition label in JSON format
-      const prompt = `Analyze the food in this image and provide an explanation of the nutrition facts followed by a JSON object in the following format:
+      const prompt = `Analyze the food items in this image and provide an explanation of the nutrition facts, followed by a JSON object in the form of a list of objects of the following structure:
 {
+  "foodName": "string",
   "servingSize": "string",
   "calories": "number",
   "totalFat": "number",
@@ -43,7 +44,8 @@ const CameraScreen = () => {
   "totalSugars": "number",
   "addedSugars": "number",
   "protein": "number"
-}`;
+}
+Nutrition facts should be based on the quantity of food in the image rather than a serving size, assume I ate everything in an image unless otherwise specified.`;
 
       const requestBody = {
         model: 'gpt-4o',
@@ -86,13 +88,13 @@ const CameraScreen = () => {
       // Extract the JSON part from the content
       const jsonString = content.match(/```json([\s\S]*?)```/);
       if (jsonString && jsonString[1]) {
-        const nutritionData = JSON.parse(jsonString[1].trim());
-
+        const nutritionDataList = JSON.parse(jsonString[1].trim()); // Parse the list of nutrition data objects
+      
         // Log the parsed data
-        console.log('Parsed Nutrition Data:', nutritionData);
-
-        // Navigate to NutritionScreen with the structured nutrition data and explanation
-        navigation.navigate('NutritionScreen', { data: nutritionData, explanation: content });
+        console.log('Parsed Nutrition Data List:', nutritionDataList);
+      
+        // Navigate to NutritionScreen with the structured nutrition data list and explanation
+        navigation.navigate('NutritionScreen', { data: nutritionDataList, explanation: content });
       } else {
         console.error('JSON not found in the response content.');
         Alert.alert('Error', 'No valid nutrition data found. Please try again.');

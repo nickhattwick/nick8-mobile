@@ -1,19 +1,29 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ImageBackground } from 'react-native';
+import config from '../../config/config.js';
+import * as WebBrowser from 'expo-web-browser';
+// No need to import Linking and SecureStore here since deep linking is handled in App.js
 
-const Login = ({ navigation }) => {
-  
-  const handleGoogleSignIn = () => {
-    // Directly navigate to CameraScreen
-    navigation.replace('CameraScreen');
+const Login = () => {
+  const handleGoogleSignIn = async () => {
+    try {
+      const authUrl = `${config.SERVER_URL}/auth/google/mobile`;
+
+      // Open the authentication URL in the system's browser
+      await WebBrowser.openAuthSessionAsync(authUrl);
+
+      // No need to handle the result here; the deep link listener in App.js will manage the redirect
+    } catch (error) {
+      console.log(`An error occurred: ${error.message}`);
+    }
   };
 
   return (
     <ImageBackground source={require('../assets/nick8mob.png')} style={styles.backgroundImage}>
       <View style={styles.loginContainer}>
         <Text style={styles.title}>Nick8</Text>
-        <TouchableOpacity style={styles.googleSignInBtn} onPress={handleGoogleSignIn}>
-          <Text style={styles.buttonText}>Take A Picture</Text>
+        <TouchableOpacity style={styles.loginBtn} onPress={handleGoogleSignIn}>
+          <Text style={styles.buttonText}>Sign in with Google</Text>
         </TouchableOpacity>
       </View>
     </ImageBackground>
@@ -41,7 +51,7 @@ const styles = StyleSheet.create({
     textShadowRadius: 1,
     marginBottom: 20,
   },
-  googleSignInBtn: {
+  loginBtn: {
     backgroundColor: '#00b4d8',
     paddingVertical: 10,
     paddingHorizontal: 20,
